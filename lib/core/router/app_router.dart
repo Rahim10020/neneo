@@ -24,7 +24,8 @@ class AppRouter {
 
       case AppConstants.routeResult:
         final args = settings.arguments as Map<String, dynamic>;
-        return _buildRoute(ResultScreen(tripData: args));
+        final trip = args['trip'];
+        return _buildRoute(ResultScreen(trip: trip));
 
       case AppConstants.routeSettings:
         return _buildRoute(const SettingsScreen());
