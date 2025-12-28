@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:neneo/providers/trip_provider.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 import '../../core/constants/app_constants.dart';
@@ -31,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _onCalculatePrice() {
+  void _onCalculatePrice() async {
     if (_origin == null || _destination == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -42,16 +44,22 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // Navigate to result screen
-    Navigator.pushNamed(
-      context,
-      AppConstants.routeResult,
-      arguments: {
-        'origin': _origin,
-        'destination': _destination,
-        'vehicleType': _selectedVehicle,
-      },
+    // TODO: Get actual coordinates (replace with real geocoding)
+    final tripProvider = Provider.of<TripProvider>(context, listen: false);
+
+    final trip = await tripProvider.calculateTrip(
+      origin: _origin!,
+      destination: _destination!,
+      vehicleType: _selectedVehicle == VehicleType.zemidjan ? 'moto' : 'taxi',
+      originLat: 6.1319, // Placeholder
+      originLng: 1.2227,
+      destLat: 6.1656,
+      destLng: 1.2545,
     );
+
+    if (trip != null) {
+      Navigator.pushNamed(context, AppConstants.routeResult, arguments: trip);
+    }
   }
 
   @override
