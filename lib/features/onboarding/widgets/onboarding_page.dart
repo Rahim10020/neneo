@@ -4,14 +4,16 @@ import '../../../core/constants/app_text_styles.dart';
 
 class OnboardingPage extends StatelessWidget {
   final String imagePath;
-  final String title;
+  final String titleStart;
+  final String titleEnd;
   final String titleHighlight;
   final String subtitle;
 
   const OnboardingPage({
     super.key,
     required this.imagePath,
-    required this.title,
+    required this.titleStart,
+    required this.titleEnd,
     this.titleHighlight = '',
     required this.subtitle,
   });
@@ -48,12 +50,13 @@ class OnboardingPage extends StatelessWidget {
             text: TextSpan(
               style: AppTextStyles.h1,
               children: [
-                TextSpan(text: title),
+                TextSpan(text: titleStart),
                 if (titleHighlight.isNotEmpty)
                   TextSpan(
                     text: ' $titleHighlight',
                     style: AppTextStyles.h1.copyWith(color: AppColors.primary),
                   ),
+                TextSpan(text: titleEnd),
               ],
             ),
           ),

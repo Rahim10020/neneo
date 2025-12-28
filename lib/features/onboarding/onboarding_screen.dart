@@ -19,22 +19,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> _pages = [
     {
-      'image': 'assets/images/onboarding_1.png',
-      'title': 'Connaissez le juste\nprix',
+      'image': 'assets/images/debut.png',
+      'titleStart': 'Connaissez le juste\nprix',
+      'titleEnd': 'de partir',
       'highlight': 'avant',
       'subtitle':
           'Finis les negociations interminables,\npayer le prix normal sans surcharge.',
     },
     {
-      'image': 'assets/images/onboarding_2.png',
-      'title': 'Rapide',
-      'highlight': '',
+      'image': 'assets/images/moto.png',
+      'titleStart': '',
+      'titleEnd': 'et Simple',
+      'highlight': 'Rapide',
       'subtitle': 'Entre le depart et l\'arrivee, obtenez\nun prix instantane.',
     },
     {
-      'image': 'assets/images/onboarding_3.png',
-      'title': 'Economisez',
-      'highlight': '',
+      'image': 'assets/icons/ventes.svg',
+      'titleStart': '',
+      'titleEnd': 'chaque jours',
+      'highlight': 'Economisez',
       'subtitle':
           'Ne payer plus jamais trop cher.\nObtenez le prix juste pour chaque course\na Lome.',
     },
@@ -88,7 +91,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   final page = _pages[index];
                   return OnboardingPage(
                     imagePath: page['image']!,
-                    title: page['title']!,
+                    titleStart: page['titleStart']!,
+                    titleEnd: page['titleEnd']!,
                     titleHighlight: page['highlight']!,
                     subtitle: page['subtitle']!,
                   );
