@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
 
@@ -12,14 +13,18 @@ class AppTheme {
       error: AppColors.error,
     ),
     scaffoldBackgroundColor: AppColors.background,
-    fontFamily: 'Poppins',
-    textTheme: const TextTheme(
-      displayLarge: AppTextStyles.h1,
-      displayMedium: AppTextStyles.h2,
-      displaySmall: AppTextStyles.h3,
-      bodyLarge: AppTextStyles.bodyLarge,
-      bodyMedium: AppTextStyles.bodyMedium,
+
+    // Use Google Fonts for the entire app
+    textTheme: GoogleFonts.poppinsTextTheme(
+      TextTheme(
+        displayLarge: AppTextStyles.h1,
+        displayMedium: AppTextStyles.h2,
+        displaySmall: AppTextStyles.h3,
+        bodyLarge: AppTextStyles.bodyLarge,
+        bodyMedium: AppTextStyles.bodyMedium,
+      ),
     ),
+
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
@@ -30,10 +35,11 @@ class AppTheme {
         elevation: 0,
       ),
     ),
-    appBarTheme: const AppBarTheme(
+
+    appBarTheme: AppBarTheme(
       backgroundColor: AppColors.transparent,
       elevation: 0,
-      iconTheme: IconThemeData(color: AppColors.textPrimary),
+      iconTheme: const IconThemeData(color: AppColors.textPrimary),
       titleTextStyle: AppTextStyles.h3,
     ),
   );

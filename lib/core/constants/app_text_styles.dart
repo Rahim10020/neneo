@@ -1,61 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTextStyles {
+  // Base Poppins TextStyle
+  static TextStyle _poppins({
+    required double fontSize,
+    required FontWeight fontWeight,
+    Color? color,
+    double? height,
+  }) {
+    return GoogleFonts.poppins(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+      height: height,
+    );
+  }
+
   // Headlines
-  static const TextStyle h1 = TextStyle(
+  static TextStyle h1 = _poppins(
     fontSize: 32,
     fontWeight: FontWeight.bold,
-    fontFamily: 'Poppins',
     color: AppColors.textPrimary,
     height: 1.2,
   );
 
-  static const TextStyle h2 = TextStyle(
+  static TextStyle h2 = _poppins(
     fontSize: 24,
     fontWeight: FontWeight.bold,
-    fontFamily: 'Poppins',
     color: AppColors.textPrimary,
     height: 1.3,
   );
 
-  static const TextStyle h3 = TextStyle(
+  static TextStyle h3 = _poppins(
     fontSize: 20,
     fontWeight: FontWeight.w600,
-    fontFamily: 'Poppins',
     color: AppColors.textPrimary,
   );
 
   // Body Text
-  static const TextStyle bodyLarge = TextStyle(
+  static TextStyle bodyLarge = _poppins(
     fontSize: 16,
     fontWeight: FontWeight.normal,
-    fontFamily: 'Poppins',
     color: AppColors.textPrimary,
     height: 1.5,
   );
 
-  static const TextStyle bodyMedium = TextStyle(
+  static TextStyle bodyMedium = _poppins(
     fontSize: 14,
     fontWeight: FontWeight.normal,
-    fontFamily: 'Poppins',
     color: AppColors.textSecondary,
     height: 1.5,
   );
 
   // Button Text
-  static const TextStyle button = TextStyle(
+  static TextStyle button = _poppins(
     fontSize: 16,
     fontWeight: FontWeight.w600,
-    fontFamily: 'Poppins',
     color: AppColors.textPrimary,
   );
 
   // Splash Brand
-  static const TextStyle splashBrand = TextStyle(
+  static TextStyle splashBrand = _poppins(
     fontSize: 48,
     fontWeight: FontWeight.bold,
-    fontFamily: 'Poppins',
     color: AppColors.textPrimary,
   );
 }
