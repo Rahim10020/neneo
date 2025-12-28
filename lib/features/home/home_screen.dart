@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:neneo/providers/trip_provider.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 import '../../core/constants/app_constants.dart';
+import '../../providers/trip_provider.dart';
+import '../../providers/user_provider.dart';
+import '../../services/location_service.dart';
 import 'widgets/location_input.dart';
 import 'widgets/vehicle_selector.dart';
 
@@ -15,15 +17,38 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? _origin;
-  String? _destination;
+  // Location data
+  PlaceResult? _originPlace;
+  PlaceResult? _destinationPlace;
+
+  // Selected vehicle
   VehicleType _selectedVehicle = VehicleType.zemidjan;
+
+  // Controllers
+  final TextEditingController _originController = TextEditingController();
+  final TextEditingController _destinationController = TextEditingController();
+
+  // Search results
+  List<PlaceResult> _originSuggestions = [];
+  List<PlaceResult> _destinationSuggestions = [];
+
+  // Loading states
+  bool _isSearchingOrigin = false;
+  bool _isSearchingDestination = false;
+  bool _isGettingLocation = false;
+
+  // Night rate detection
   bool _isNightRate = false;
 
   @override
   void initState() {
     super.initState();
     _checkNightRate();
+    _loadUserPreferences();
+
+    // Debounced search
+    _originController.addListener(_onOriginChanged);
+    _destinationController.addListener(_onDestinationChanged);
   }
 
   void _checkNightRate() {
@@ -33,37 +58,162 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _onCalculatePrice() async {
-    if (_origin == null || _destination == null) {
+  void _loadUserPreferences() {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    setState(() {
+      _selectedVehicle = userProvider.user.defaultVehicle == 'moto'
+          ? VehicleType.zemidjan
+          : VehicleType.taxi;
+    });
+  }
+
+  void _onOriginChanged() {
+    if (_originController.text.isEmpty) {
+      setState(() => _originSuggestions = []);
+      return;
+    }
+
+    _searchOrigin(_originController.text);
+  }
+
+  void _onDestinationChanged() {
+    if (_destinationController.text.isEmpty) {
+      setState(() => _destinationSuggestions = []);
+      return;
+    }
+
+    _searchDestination(_destinationController.text);
+  }
+
+  Future<void> _searchOrigin(String query) async {
+    if (query.length < 2) return;
+
+    setState(() => _isSearchingOrigin = true);
+
+    final tripProvider = Provider.of<TripProvider>(context, listen: false);
+    final results = await tripProvider.searchPlaces(query);
+
+    setState(() {
+      _originSuggestions = results;
+      _isSearchingOrigin = false;
+    });
+  }
+
+  Future<void> _searchDestination(String query) async {
+    if (query.length < 2) return;
+
+    setState(() => _isSearchingDestination = true);
+
+    final tripProvider = Provider.of<TripProvider>(context, listen: false);
+    final results = await tripProvider.searchPlaces(query);
+
+    setState(() {
+      _destinationSuggestions = results;
+      _isSearchingDestination = false;
+    });
+  }
+
+  Future<void> _useCurrentLocation() async {
+    setState(() => _isGettingLocation = true);
+
+    final tripProvider = Provider.of<TripProvider>(context, listen: false);
+    final location = await tripProvider.getCurrentLocation();
+
+    if (location != null) {
+      setState(() {
+        _originPlace = location;
+        _originController.text = location.shortName;
+        _originSuggestions = [];
+      });
+    } else {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Veuillez remplir tous les champs'),
+          content: Text('Impossible d\'obtenir votre position'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+
+    setState(() => _isGettingLocation = false);
+  }
+
+  Future<void> _onCalculatePrice() async {
+    // Validation
+    if (_originPlace == null || _destinationPlace == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez sélectionner un départ et une destination'),
           backgroundColor: AppColors.error,
         ),
       );
       return;
     }
 
-    // TODO: Get actual coordinates (replace with real geocoding)
-    final tripProvider = Provider.of<TripProvider>(context, listen: false);
-
-    final trip = await tripProvider.calculateTrip(
-      origin: _origin!,
-      destination: _destination!,
-      vehicleType: _selectedVehicle == VehicleType.zemidjan ? 'moto' : 'taxi',
-      originLat: 6.1319, // Placeholder
-      originLng: 1.2227,
-      destLat: 6.1656,
-      destLng: 1.2545,
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      ),
     );
 
+    // Calculate trip
+    final tripProvider = Provider.of<TripProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    final trip = await tripProvider.calculateTrip(
+      origin: _originPlace!.shortName,
+      destination: _destinationPlace!.shortName,
+      vehicleType: _selectedVehicle == VehicleType.zemidjan ? 'moto' : 'taxi',
+      originLat: _originPlace!.lat,
+      originLng: _originPlace!.lng,
+      destLat: _destinationPlace!.lat,
+      destLng: _destinationPlace!.lng,
+    );
+
+    // Close loading
+    if (!mounted) return;
+    Navigator.pop(context);
+
     if (trip != null) {
+      // Save trip if Pro user
+      if (userProvider.isPro) {
+        await tripProvider.saveCurrentTrip();
+      }
+
+      // Navigate to result
+      if (!mounted) return;
       Navigator.pushNamed(context, AppConstants.routeResult, arguments: trip);
+    } else {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(tripProvider.error ?? 'Erreur de calcul'),
+          backgroundColor: AppColors.error,
+        ),
+      );
     }
+  }
+
+  void _swapLocations() {
+    final tempPlace = _originPlace;
+    final tempText = _originController.text;
+
+    setState(() {
+      _originPlace = _destinationPlace;
+      _originController.text = _destinationController.text;
+
+      _destinationPlace = tempPlace;
+      _destinationController.text = tempText;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -107,45 +257,80 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Origin Input
                 LocationInput(
                   label: 'POINT DE DEPART',
-                  hint: 'tokoin',
+                  controller: _originController,
                   icon: Icons.radio_button_checked,
                   iconColor: AppColors.error,
-                  onChanged: (value) => setState(() => _origin = value),
+                  suggestions: _originSuggestions,
+                  isLoading: _isSearchingOrigin,
+                  onSuggestionSelected: (place) {
+                    setState(() {
+                      _originPlace = place;
+                      _originController.text = place.shortName;
+                      _originSuggestions = [];
+                    });
+                  },
                 ),
 
                 const SizedBox(height: 8),
 
-                // Use current location button
-                GestureDetector(
-                  onTap: () {
-                    // TODO: Implement geolocation
-                    setState(() => _origin = 'Ma position actuelle');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.my_location,
-                          color: AppColors.success,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Utiliser ma position actuelle',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.success,
-                            fontWeight: FontWeight.w500,
+                // Use current location & swap button
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _isGettingLocation
+                              ? null
+                              : _useCurrentLocation,
+                          child: Row(
+                            children: [
+                              if (_isGettingLocation)
+                                SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.success,
+                                  ),
+                                )
+                              else
+                                Icon(
+                                  Icons.my_location,
+                                  color: AppColors.success,
+                                  size: 18,
+                                ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  'Utiliser ma position actuelle',
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: AppColors.success,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const Spacer(),
-                        Icon(
-                          Icons.swap_vert,
-                          color: AppColors.textPrimary,
-                          size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: _swapLocations,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.gray100,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.swap_vert,
+                            color: AppColors.textPrimary,
+                            size: 20,
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
 
@@ -154,10 +339,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Destination Input
                 LocationInput(
                   label: 'DESTINATION',
-                  hint: 'Aeroport',
+                  controller: _destinationController,
                   icon: Icons.location_on,
                   iconColor: AppColors.success,
-                  onChanged: (value) => setState(() => _destination = value),
+                  suggestions: _destinationSuggestions,
+                  isLoading: _isSearchingDestination,
+                  onSuggestionSelected: (place) {
+                    setState(() {
+                      _destinationPlace = place;
+                      _destinationController.text = place.shortName;
+                      _destinationSuggestions = [];
+                    });
+                  },
                 ),
 
                 const SizedBox(height: 32),
@@ -216,32 +409,94 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 32),
 
                 // Calculate Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _onCalculatePrice,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Calculer le prix', style: AppTextStyles.button),
-                        const SizedBox(width: 8),
-                        Icon(
-                          Icons.directions_walk,
-                          size: 20,
-                          color: AppColors.textPrimary,
+                Consumer<TripProvider>(
+                  builder: (context, tripProvider, child) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: tripProvider.isCalculating
+                            ? null
+                            : _onCalculatePrice,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 18),
                         ),
-                      ],
+                        child: tripProvider.isCalculating
+                            ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.textPrimary,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Calculer le prix',
+                                    style: AppTextStyles.button,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Icon(
+                                    Icons.directions_walk,
+                                    size: 20,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ],
+                              ),
+                      ),
+                    );
+                  },
+                ),
+
+                // Pro badge (if user is Pro)
+                if (userProvider.isPro) ...[
+                  const SizedBox(height: 16),
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFFFFEB3B), Color(0xFFFDD835)],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: AppColors.textPrimary,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Membre Pro',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _originController.dispose();
+    _destinationController.dispose();
+    super.dispose();
   }
 }
