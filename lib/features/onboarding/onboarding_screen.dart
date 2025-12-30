@@ -34,10 +34,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'subtitle': 'Entre le depart et l\'arrivee, obtenez un prix instantane.',
     },
     {
-      'image': 'assets/icons/ventes.svg',
-      'titleStart': '',
-      'titleEnd': 'chaque jours',
-      'highlight': 'Economisez',
+      'image': 'assets/images/motorcycle.png',
+      'titleStart': 'Economisez',
+      'titleEnd': 'jours',
+      'highlight': 'chaque',
       'subtitle':
           'Ne payer plus jamais trop cher. Obtenez le prix juste pour chaque course a Lome.',
     },
