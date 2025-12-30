@@ -31,7 +31,7 @@ class PricingRule {
       id: 'moto_default',
       vehicleType: 'moto',
       baseRatePerKm: 100,
-      minimumPrice: 200,
+      minimumPrice: 300, // Tarif minimum réaliste pour Lomé
       nightMultiplier: 1.30,
       weekendMultiplier: 1.20,
       startHourNight: 20,

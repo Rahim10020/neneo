@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: Center(
-        child: Text(AppConstants.appName, style: AppTextStyles.splashBrand),
+        child: Text(AppConstants.appName, style: AppTextStyles.brandLogo),
       ),
     );
   }

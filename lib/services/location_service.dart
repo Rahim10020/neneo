@@ -125,6 +125,7 @@ class LocationService {
   // Get predefined popular places (for offline/quick access)
   List<PlaceResult> getPopularPlaces() {
     return [
+      // Lieux emblématiques
       PlaceResult(
         displayName: 'Aéroport International Gnassingbé Eyadéma',
         lat: 6.1656,
@@ -156,6 +157,32 @@ class LocationService {
         type: 'stadium',
       ),
       PlaceResult(
+        displayName: 'Hôpital CHU Sylvanus Olympio',
+        lat: 6.1328,
+        lng: 1.2089,
+        type: 'hospital',
+      ),
+      PlaceResult(
+        displayName: 'Marché d\'Assigamé',
+        lat: 6.1923,
+        lng: 1.1842,
+        type: 'market',
+      ),
+      PlaceResult(
+        displayName: 'Boulevard du 13 Janvier',
+        lat: 6.1276,
+        lng: 1.2318,
+        type: 'road',
+      ),
+      PlaceResult(
+        displayName: 'Carrefour Aéroport',
+        lat: 6.1598,
+        lng: 1.2387,
+        type: 'junction',
+      ),
+
+      // Quartiers populaires
+      PlaceResult(
         displayName: 'Tokoin',
         lat: 6.1453,
         lng: 1.2154,
@@ -180,10 +207,58 @@ class LocationService {
         type: 'neighborhood',
       ),
       PlaceResult(
-        displayName: 'Hôpital CHU Sylvanus Olympio',
-        lat: 6.1328,
-        lng: 1.2089,
-        type: 'hospital',
+        displayName: 'Adidogomé',
+        lat: 6.1834,
+        lng: 1.1756,
+        type: 'neighborhood',
+      ),
+      PlaceResult(
+        displayName: 'Cacaveli',
+        lat: 6.1523,
+        lng: 1.1987,
+        type: 'neighborhood',
+      ),
+      PlaceResult(
+        displayName: 'Hédzranawoé',
+        lat: 6.1612,
+        lng: 1.2198,
+        type: 'neighborhood',
+      ),
+      PlaceResult(
+        displayName: 'Amoutivé',
+        lat: 6.1145,
+        lng: 1.2287,
+        type: 'neighborhood',
+      ),
+      PlaceResult(
+        displayName: 'Kodjoviakopé',
+        lat: 6.0987,
+        lng: 1.2534,
+        type: 'neighborhood',
+      ),
+      PlaceResult(
+        displayName: 'Démakpoè',
+        lat: 6.1389,
+        lng: 1.1923,
+        type: 'neighborhood',
+      ),
+      PlaceResult(
+        displayName: 'Totsi',
+        lat: 6.1256,
+        lng: 1.1834,
+        type: 'neighborhood',
+      ),
+      PlaceResult(
+        displayName: 'Aflao Gakli',
+        lat: 6.1734,
+        lng: 1.2523,
+        type: 'neighborhood',
+      ),
+      PlaceResult(
+        displayName: 'Gbényédzi',
+        lat: 6.1867,
+        lng: 1.2134,
+        type: 'neighborhood',
       ),
     ];
   }
