@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 import '../../core/constants/app_constants.dart';
@@ -28,6 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
   // Loading states
   bool _isGettingLocation = false;
 
+  // Permission states
+  bool _hasRequestedPermission = false;
+  bool _locationPermissionDenied = false;
+
   // Night rate detection
   bool _isNightRate = false;
 
@@ -36,7 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _checkNightRate();
     _loadUserPreferences();
-    _initializeOriginWithCurrentLocation();
+    // Demander la permission après le build initial
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _requestLocationPermissionWithDialog();
+    });
   }
 
   void _checkNightRate() {
@@ -55,6 +63,223 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> _requestLocationPermissionWithDialog() async {
+    if (_hasRequestedPermission) return;
+
+    final locationService = LocationService();
+
+    // Vérifier d'abord si le service GPS est activé
+    final serviceEnabled = await locationService.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      if (!mounted) return;
+      _showLocationServiceDisabledDialog();
+      return;
+    }
+
+    // Vérifier le statut actuel de la permission
+    final permission = await locationService.checkPermission();
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permission refusée définitivement
+      if (!mounted) return;
+      _showPermissionDeniedForeverDialog();
+      return;
+    }
+
+    if (permission == LocationPermission.denied) {
+      // Montrer un dialogue explicatif avant de demander
+      if (!mounted) return;
+      final shouldRequest = await _showPermissionExplanationDialog();
+
+      if (shouldRequest == true) {
+        setState(() => _hasRequestedPermission = true);
+        await _requestAndUseLocation();
+      } else {
+        setState(() {
+          _hasRequestedPermission = true;
+          _locationPermissionDenied = true;
+        });
+      }
+    } else {
+      // Permission déjà accordée
+      setState(() => _hasRequestedPermission = true);
+      await _initializeOriginWithCurrentLocation();
+    }
+  }
+
+  Future<bool?> _showPermissionExplanationDialog() async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.location_on, color: AppColors.primary),
+            const SizedBox(width: 12),
+            Text(
+              'Localisation',
+              style: AppTextStyles.h3.copyWith(fontSize: 18),
+            ),
+          ],
+        ),
+        content: Text(
+          'neneo? souhaite accéder à votre position pour détecter automatiquement votre point de départ.\n\nVous pouvez aussi sélectionner manuellement votre position si vous refusez.',
+          style: AppTextStyles.bodyLarge,
+        ),
+        backgroundColor: AppColors.cardBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              'Refuser',
+              style: AppTextStyles.button.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+            ),
+            child: Text(
+              'Autoriser',
+              style: AppTextStyles.button.copyWith(
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLocationServiceDisabledDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.location_off, color: AppColors.error),
+            const SizedBox(width: 12),
+            Text(
+              'GPS désactivé',
+              style: AppTextStyles.h3.copyWith(fontSize: 18),
+            ),
+          ],
+        ),
+        content: Text(
+          'Veuillez activer le GPS de votre appareil pour utiliser la détection automatique de position.\n\nVous pouvez continuer en sélectionnant manuellement votre point de départ.',
+          style: AppTextStyles.bodyLarge,
+        ),
+        backgroundColor: AppColors.cardBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() {
+                _hasRequestedPermission = true;
+                _locationPermissionDenied = true;
+              });
+            },
+            child: Text(
+              'Continuer sans GPS',
+              style: AppTextStyles.button.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPermissionDeniedForeverDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.location_off, color: AppColors.error),
+            const SizedBox(width: 12),
+            Text(
+              'Permission refusée',
+              style: AppTextStyles.h3.copyWith(fontSize: 18),
+            ),
+          ],
+        ),
+        content: Text(
+          'L\'accès à la localisation a été refusé définitivement.\n\nPour l\'activer, allez dans les paramètres de l\'application.',
+          style: AppTextStyles.bodyLarge,
+        ),
+        backgroundColor: AppColors.cardBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() {
+                _hasRequestedPermission = true;
+                _locationPermissionDenied = true;
+              });
+            },
+            child: Text(
+              'Continuer sans',
+              style: AppTextStyles.button.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await LocationService().openAppSettings();
+              setState(() {
+                _hasRequestedPermission = true;
+                _locationPermissionDenied = true;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+            ),
+            child: Text(
+              'Ouvrir paramètres',
+              style: AppTextStyles.button.copyWith(
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _requestAndUseLocation() async {
+    final locationService = LocationService();
+    final permission = await locationService.requestPermission();
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      setState(() => _locationPermissionDenied = true);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Permission de localisation refusée. Vous pouvez sélectionner votre position manuellement.'),
+          backgroundColor: AppColors.warning,
+        ),
+      );
+    } else {
+      await _initializeOriginWithCurrentLocation();
+    }
+  }
+
   Future<void> _initializeOriginWithCurrentLocation() async {
     setState(() => _isGettingLocation = true);
 
@@ -65,6 +290,14 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _originPlace = location;
       });
+    } else {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Impossible d\'obtenir votre position. Sélectionnez manuellement votre point de départ.'),
+          backgroundColor: AppColors.warning,
+        ),
+      );
     }
 
     setState(() => _isGettingLocation = false);
