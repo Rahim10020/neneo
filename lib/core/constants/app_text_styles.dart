@@ -67,4 +67,18 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
   );
+
+  // Brand style with Acme font (for "neneo?" logo)
+  static TextStyle brandLogo = GoogleFonts.acme(
+    fontSize: 48,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textPrimary,
+  );
+
+  // Brand logo for home header (smaller)
+  static TextStyle brandLogoSmall = GoogleFonts.acme(
+    fontSize: 24,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textPrimary,
+  );
 }
