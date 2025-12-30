@@ -22,18 +22,17 @@ class _SplashScreenState extends State<SplashScreen> {
     // Wait 2 seconds for splash
     await Future.delayed(const Duration(seconds: 2));
 
-    if (!mounted) return;
-
     // Check if first launch
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     final isFirstLaunch = prefs.getBool(AppConstants.keyFirstLaunch) ?? true;
 
     if (isFirstLaunch) {
       // Go to onboarding
-      Navigator.pushReplacementNamed(context, AppConstants.routeHome);
+      Navigator.pushReplacementNamed(context, AppConstants.routeOnboarding);
     } else {
       // Go directly to home
-      Navigator.pushReplacementNamed(context, AppConstants.routeOnboarding);
+      Navigator.pushReplacementNamed(context, AppConstants.routeHome);
     }
   }
 
