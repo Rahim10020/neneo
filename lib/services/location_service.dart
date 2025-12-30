@@ -18,6 +18,26 @@ class LocationService {
 
   // ========== CURRENT LOCATION ==========
 
+  // Check if location services are enabled
+  Future<bool> isLocationServiceEnabled() async {
+    return await Geolocator.isLocationServiceEnabled();
+  }
+
+  // Check current permission status
+  Future<LocationPermission> checkPermission() async {
+    return await Geolocator.checkPermission();
+  }
+
+  // Request location permission
+  Future<LocationPermission> requestPermission() async {
+    return await Geolocator.requestPermission();
+  }
+
+  // Open app settings (for when permission is denied forever)
+  Future<bool> openAppSettings() async {
+    return await Geolocator.openAppSettings();
+  }
+
   // Get current position
   Future<Position?> getCurrentPosition() async {
     try {
