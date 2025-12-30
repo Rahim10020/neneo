@@ -126,9 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: AppTextStyles.bodyLarge,
         ),
         backgroundColor: AppColors.cardBackground,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -141,9 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
             child: Text(
               'Autoriser',
               style: AppTextStyles.button.copyWith(
@@ -175,9 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: AppTextStyles.bodyLarge,
         ),
         backgroundColor: AppColors.cardBackground,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
           TextButton(
             onPressed: () {
@@ -189,9 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             child: Text(
               'Continuer sans GPS',
-              style: AppTextStyles.button.copyWith(
-                color: AppColors.primary,
-              ),
+              style: AppTextStyles.button.copyWith(color: AppColors.primary),
             ),
           ),
         ],
@@ -218,9 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: AppTextStyles.bodyLarge,
         ),
         backgroundColor: AppColors.cardBackground,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
           TextButton(
             onPressed: () {
@@ -246,9 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _locationPermissionDenied = true;
               });
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
             child: Text(
               'Ouvrir paramètres',
               style: AppTextStyles.button.copyWith(
@@ -271,7 +259,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Permission de localisation refusée. Vous pouvez sélectionner votre position manuellement.'),
+          content: Text(
+            'Permission de localisation refusée. Vous pouvez sélectionner votre position manuellement.',
+          ),
           backgroundColor: AppColors.warning,
         ),
       );
@@ -294,7 +284,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Impossible d\'obtenir votre position. Sélectionnez manuellement votre point de départ.'),
+          content: Text(
+            'Impossible d\'obtenir votre position. Sélectionnez manuellement votre point de départ.',
+          ),
           backgroundColor: AppColors.warning,
         ),
       );
@@ -396,7 +388,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // Navigate to result
       if (!mounted) return;
-      Navigator.pushNamed(context, AppConstants.routeResult, arguments: trip);
+      Navigator.pushNamed(
+        context,
+        AppConstants.routeResult,
+        arguments: {'trip': trip},
+      );
     } else {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -426,7 +422,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(AppConstants.appName, style: AppTextStyles.brandLogoSmall),
+                    Text(
+                      AppConstants.appName,
+                      style: AppTextStyles.brandLogoSmall,
+                    ),
                     Row(
                       children: [
                         Icon(
@@ -501,10 +500,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.gray100,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: AppColors.gray300,
-                          width: 1,
-                        ),
+                        border: Border.all(color: AppColors.gray300, width: 1),
                       ),
                       child: Icon(
                         Icons.swap_vert,

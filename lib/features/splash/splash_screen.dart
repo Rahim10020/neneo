@@ -30,10 +30,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (isFirstLaunch) {
       // Go to onboarding
-      Navigator.pushReplacementNamed(context, AppConstants.routeOnboarding);
+      Navigator.pushReplacementNamed(context, AppConstants.routeHome);
     } else {
       // Go directly to home
-      Navigator.pushReplacementNamed(context, AppConstants.routeHome);
+      Navigator.pushReplacementNamed(context, AppConstants.routeOnboarding);
     }
   }
 

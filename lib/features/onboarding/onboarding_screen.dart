@@ -20,9 +20,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<Map<String, String>> _pages = [
     {
       'image': 'assets/images/debut.png',
-      'titleStart': 'Connaissez le juste\nprix',
-      'titleEnd': 'de partir',
-      'highlight': 'avant',
+      'titleStart': 'Connaissez le juste',
+      'titleEnd': 'avant de partir',
+      'highlight': 'prix',
       'subtitle':
           'Finis les negociations interminables,\npayer le prix normal sans surcharge.',
     },
