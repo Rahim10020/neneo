@@ -27,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Loading states
   bool _isGettingLocation = false;
-  bool _isCalculating = false;
 
   // Night rate detection
   bool _isNightRate = false;
@@ -86,7 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _originPlace = result;
       });
-      _autoCalculateIfReady();
     }
   }
 
@@ -105,7 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _destinationPlace = result;
       });
-      _autoCalculateIfReady();
     }
   }
 
@@ -117,28 +114,30 @@ class _HomeScreenState extends State<HomeScreen> {
       _originPlace = _destinationPlace;
       _destinationPlace = temp;
     });
-
-    _autoCalculateIfReady();
   }
 
-  // Calcul automatique quand tous les éléments sont définis
-  void _autoCalculateIfReady() {
-    if (_originPlace != null && _destinationPlace != null && !_isCalculating) {
-      // Petit délai pour un effet plus fluide
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) {
-          _calculateAndNavigate();
-        }
-      });
+  Future<void> _onCalculatePrice() async {
+    // Validation
+    if (_originPlace == null || _destinationPlace == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez sélectionner un départ et une destination'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
     }
-  }
 
-  Future<void> _calculateAndNavigate() async {
-    if (_originPlace == null || _destinationPlace == null) return;
-    if (_isCalculating) return;
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      ),
+    );
 
-    setState(() => _isCalculating = true);
-
+    // Calculate trip
     final tripProvider = Provider.of<TripProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
@@ -152,7 +151,9 @@ class _HomeScreenState extends State<HomeScreen> {
       destLng: _destinationPlace!.lng,
     );
 
-    setState(() => _isCalculating = false);
+    // Close loading
+    if (!mounted) return;
+    Navigator.pop(context);
 
     if (trip != null) {
       // Save trip if Pro user
@@ -177,6 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    final canCalculate = _originPlace != null && _destinationPlace != null;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -309,7 +311,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   selectedVehicle: _selectedVehicle,
                   onVehicleSelected: (vehicle) {
                     setState(() => _selectedVehicle = vehicle);
-                    _autoCalculateIfReady();
                   },
                 ),
 
@@ -345,44 +346,63 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
 
-                // Calculating indicator
-                if (_isCalculating)
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppColors.primary,
-                        width: 1,
+                // Calculate Button
+                Consumer<TripProvider>(
+                  builder: (context, tripProvider, child) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: canCalculate && !tripProvider.isCalculating
+                            ? _onCalculatePrice
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          backgroundColor: canCalculate
+                              ? AppColors.primary
+                              : AppColors.gray300,
+                          disabledBackgroundColor: AppColors.gray300,
+                        ),
+                        child: tripProvider.isCalculating
+                            ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.textOnPrimary,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Calculer le prix',
+                                    style: AppTextStyles.button.copyWith(
+                                      color: canCalculate
+                                          ? AppColors.textPrimary
+                                          : AppColors.gray500,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Icon(
+                                    Icons.calculate,
+                                    size: 20,
+                                    color: canCalculate
+                                        ? AppColors.textPrimary
+                                        : AppColors.gray500,
+                                  ),
+                                ],
+                              ),
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          'Calcul du prix en cours...',
-                          style: AppTextStyles.bodyLarge.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                    );
+                  },
+                ),
 
-                // Info text when not all fields are filled
-                if (_originPlace == null || _destinationPlace == null)
+                const SizedBox(height: 16),
+
+                // Distance estimate if both places selected
+                if (canCalculate)
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -393,15 +413,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Icon(
                           Icons.info_outline,
-                          color: AppColors.gray500,
+                          color: AppColors.primary,
                           size: 20,
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Sélectionnez un point de départ et une destination pour estimer le prix',
+                            'Cliquez sur "Calculer le prix" pour obtenir une estimation',
                             style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.gray500,
+                              color: AppColors.textPrimary,
                             ),
                           ),
                         ),
