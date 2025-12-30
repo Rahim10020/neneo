@@ -24,14 +24,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'titleEnd': 'avant de partir',
       'highlight': 'prix',
       'subtitle':
-          'Finis les negociations interminables,\npayer le prix normal sans surcharge.',
+          'Finis les negociations interminables, payer le prix normal sans surcharge.',
     },
     {
       'image': 'assets/images/moto.png',
-      'titleStart': '',
-      'titleEnd': 'et Simple',
-      'highlight': 'Rapide',
-      'subtitle': 'Entre le depart et l\'arrivee, obtenez\nun prix instantane.',
+      'titleStart': 'Rapide et',
+      'titleEnd': '',
+      'highlight': 'Simple',
+      'subtitle': 'Entre le depart et l\'arrivee, obtenez un prix instantane.',
     },
     {
       'image': 'assets/icons/ventes.svg',
@@ -39,7 +39,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'titleEnd': 'chaque jours',
       'highlight': 'Economisez',
       'subtitle':
-          'Ne payer plus jamais trop cher.\nObtenez le prix juste pour chaque course\na Lome.',
+          'Ne payer plus jamais trop cher. Obtenez le prix juste pour chaque course a Lome.',
     },
   ];
 

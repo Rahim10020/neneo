@@ -25,7 +25,7 @@ class OnboardingPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(imagePath),
+          Image.asset(imagePath, width: 200, height: 200),
           const SizedBox(height: 40),
 
           Column(
@@ -38,7 +38,7 @@ class OnboardingPage extends StatelessWidget {
                 text: TextSpan(
                   style: AppTextStyles.h1,
                   children: [
-                    TextSpan(text: "$titleStart "),
+                    if (titleStart.isNotEmpty) TextSpan(text: "$titleStart "),
                     if (titleHighlight.isNotEmpty)
                       TextSpan(
                         text: ' $titleHighlight',
