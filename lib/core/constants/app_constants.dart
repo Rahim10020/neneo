@@ -37,6 +37,10 @@ class AppConstants {
   static const double nightMultiplier = 1.30; // +30%
   static const double weekendMultiplier = 1.20; // +20%
 
+  // Tarifs
+  static const String tarifNuit = "Tarif de nuit: +30%";
+  static const String tariWeekend = "Tarif de weekend: +20%";
+
   // Pro Subscription
   static const int proMonthlyPrice = 500; // CFA
   static const int proYearlyPrice = 5000; // CFA (save 1000)

@@ -67,7 +67,7 @@ class _VehicleCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.cardBackground,
           borderRadius: BorderRadius.circular(16),

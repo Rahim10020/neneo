@@ -27,6 +27,7 @@ class LocationButton extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: AppColors.gray100,
+          border: Border.all(color: AppColors.gray500, width: 0.5),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(

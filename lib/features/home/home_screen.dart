@@ -565,7 +565,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          'Tarif de nuit: +30%',
+                          AppConstants.tarifNuit,
                           style: AppTextStyles.bodyMedium.copyWith(
                             color: AppColors.textPrimary,
                             fontWeight: FontWeight.w500,
