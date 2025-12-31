@@ -442,7 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Icon(
                             Icons.settings_outlined,
                             color: AppColors.textPrimary,
-                            size: 28,
+                            size: 26,
                           ),
                         ),
                       ],
@@ -455,7 +455,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Origin Button
                 if (_isGettingLocation)
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: AppColors.gray100,
                       borderRadius: BorderRadius.circular(16),
@@ -489,7 +489,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: _selectOrigin,
                   ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
 
                 // Swap button
                 Center(
@@ -511,7 +511,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
 
                 // Destination Button
                 LocationButton(

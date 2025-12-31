@@ -24,7 +24,7 @@ class LocationButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: AppColors.gray100,
           borderRadius: BorderRadius.circular(16),
@@ -58,11 +58,7 @@ class LocationButton extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Icon(
-                  Icons.chevron_right,
-                  color: AppColors.gray500,
-                  size: 20,
-                ),
+                Icon(Icons.chevron_right, color: AppColors.gray500, size: 20),
               ],
             ),
           ],

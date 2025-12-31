@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neneo/core/constants/app_constants.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
 
@@ -23,7 +24,7 @@ class VehicleSelector extends StatelessWidget {
             type: VehicleType.zemidjan,
             icon: Icons.motorcycle,
             label: 'Zemidjan',
-            pricePerKm: '100 CFA/km',
+            pricePerKm: "${AppConstants.motoBaseRate} CFA/km",
             isSelected: selectedVehicle == VehicleType.zemidjan,
             onTap: () => onVehicleSelected(VehicleType.zemidjan),
           ),
@@ -34,7 +35,7 @@ class VehicleSelector extends StatelessWidget {
             type: VehicleType.taxi,
             icon: Icons.local_taxi,
             label: 'Taxi',
-            pricePerKm: '50 CFA/km',
+            pricePerKm: "${AppConstants.taxiBaseRate} CFA/km",
             isSelected: selectedVehicle == VehicleType.taxi,
             onTap: () => onVehicleSelected(VehicleType.taxi),
           ),
