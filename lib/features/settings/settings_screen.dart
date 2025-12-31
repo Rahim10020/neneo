@@ -297,7 +297,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             const SizedBox(height: 12),
                             SettingsItem(
                               icon: Icons.motorcycle,
-                              iconColor: AppColors.error,
                               title: 'Vehicule par defaut',
                               trailing: user.defaultVehicle == 'moto'
                                   ? 'Moto'
@@ -637,12 +636,12 @@ class _VehicleOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(20),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : null,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.gray300,
             width: isSelected ? 2 : 1,
@@ -679,7 +678,7 @@ class _ContactRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: AppColors.primary, size: 20),
+        Icon(icon, color: AppColors.textPrimary, size: 20),
         const SizedBox(width: 12),
         Expanded(child: Text(label, style: AppTextStyles.bodyMedium)),
       ],
