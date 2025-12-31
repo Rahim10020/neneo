@@ -249,28 +249,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 // Header
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Row(
                     children: [
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: AppColors.textPrimary,
-                              width: 1.5,
+                              width: 0.8,
                             ),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.arrow_back,
                             color: AppColors.textPrimary,
+                            size: 20,
                           ),
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Text('Parametres', style: AppTextStyles.h2),
+                      Text('Parametres', style: AppTextStyles.h3),
                     ],
                   ),
                 ),
@@ -467,7 +468,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 if (user.proRemainingDays <= 7) ...[
                                   const SizedBox(height: 8),
                                   Text(
-                                    '⚠️ Plus que ${user.proRemainingDays} jour${user.proRemainingDays > 1 ? "s" : ""}',
+                                    'Plus que ${user.proRemainingDays} jour${user.proRemainingDays > 1 ? "s" : ""}',
                                     style: AppTextStyles.bodyMedium.copyWith(
                                       color: AppColors.error,
                                       fontWeight: FontWeight.bold,

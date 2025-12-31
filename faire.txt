@@ -1,1 +1,6 @@
-- Se renseigner sur les tarifs reels taxi et zemidjans dans la ville de lome; Ensuite mette a jour dans app_constants
+- Se renseigner sur les tarifs reels taxi et zemidjans dans la ville de lome; Ensuite 
+    mette a jour dans app_constants
+- implementer l'abonnement (bouton s'abonner dans settings)
+- reflechir sur quand la personne devra t il se connecter ? lors de l'abonnement pro ? 
+    Je veux pas qu'on oblige la creation de compte des l'arrivee dans l'application.
+    Donc la lors du passage en pro, il va creer d'abord un compte avant de continuer.

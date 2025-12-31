@@ -8,7 +8,7 @@ class ProCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Color(0xFFFFEB3B), Color(0xFFFDD835)],
@@ -24,7 +24,7 @@ class ProCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Passez en mode pro',
+                'Passez en pro',
                 style: AppTextStyles.h3.copyWith(fontWeight: FontWeight.bold),
               ),
               Container(
@@ -47,45 +47,51 @@ class ProCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
           _ProFeature(text: 'Pas de publicites'),
           const SizedBox(height: 8),
           _ProFeature(text: 'Historique illimites'),
           const SizedBox(height: 8),
           _ProFeature(text: 'Support prioritaire'),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          const SizedBox(height: 18),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 '500 FCFA/mois',
                 style: AppTextStyles.h3.copyWith(fontWeight: FontWeight.bold),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Navigate to payment
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.textPrimary,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      'S\'abonner',
-                      style: AppTextStyles.button.copyWith(fontSize: 14),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // TODO: Navigate to payment after he create his account
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.textPrimary,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
-                    const SizedBox(width: 4),
-                    Icon(Icons.arrow_forward, size: 16),
-                  ],
-                ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'S\'abonner',
+                          style: AppTextStyles.button.copyWith(fontSize: 14),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(Icons.arrow_forward, size: 16),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
