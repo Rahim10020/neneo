@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neneo/core/constants/app_constants.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
@@ -60,7 +61,7 @@ class ProCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '500 FCFA/mois',
+                '${AppConstants.proMonthlyPrice} FCFA/mois',
                 style: AppTextStyles.h3.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
@@ -71,9 +72,9 @@ class ProCard extends StatelessWidget {
                       final userProvider = context.read<UserProvider>();
 
                       if (userProvider.isLoggedIn) {
-                        Navigator.pushNamed(context, '/payment');
+                        Navigator.pushNamed(context, AppConstants.routePayment);
                       } else {
-                        Navigator.pushNamed(context, '/login');
+                        Navigator.pushNamed(context, AppConstants.routeLogin);
                       }
                     },
                     style: ElevatedButton.styleFrom(
