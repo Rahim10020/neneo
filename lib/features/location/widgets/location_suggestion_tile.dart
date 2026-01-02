@@ -59,10 +59,7 @@ class LocationSuggestionTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: const BoxDecoration(
           border: Border(
-            bottom: BorderSide(
-              color: AppColors.gray100,
-              width: 1,
-            ),
+            bottom: BorderSide(color: AppColors.gray100, width: 1),
           ),
         ),
         child: Row(
@@ -72,7 +69,7 @@ class LocationSuggestionTile extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: _getColorForType(place.type).withOpacity(0.1),
+                color: _getColorForType(place.type).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
@@ -98,8 +95,7 @@ class LocationSuggestionTile extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  if (place.neighbourhood != null ||
-                      place.road != null) ...[
+                  if (place.neighbourhood != null || place.road != null) ...[
                     const SizedBox(height: 4),
                     Text(
                       place.neighbourhood ?? place.road ?? '',

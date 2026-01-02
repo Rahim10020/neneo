@@ -4,3 +4,8 @@
 - reflechir sur quand la personne devra t il se connecter ? lors de l'abonnement pro ? 
     Je veux pas qu'on oblige la creation de compte des l'arrivee dans l'application.
     Donc la lors du passage en pro, il va creer d'abord un compte avant de continuer.
+- Aussi on va griser le bouton motorcyle (qui renvoi dans l'historique des trajets d'une personne
+    abonne) quand la personne n'est pas abonne.
+- Dans le cas ou la personne c'etais abonne et que son anbonnement est finie, on ne vas plus continuer
+a sauvegarder ses trajets. Dans ce cas, le bouton motorcyle sera cliquable sauf qu'on va seulement 
+afficher les trajets quand il etais abonne.
