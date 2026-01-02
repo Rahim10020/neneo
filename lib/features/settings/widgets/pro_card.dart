@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../providers/user_provider.dart';
 
 class ProCard extends StatelessWidget {
   const ProCard({super.key});
@@ -66,7 +68,13 @@ class ProCard extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // TODO: Navigate to payment after he create his account
+                      final userProvider = context.read<UserProvider>();
+
+                      if (userProvider.isLoggedIn) {
+                        Navigator.pushNamed(context, '/payment');
+                      } else {
+                        Navigator.pushNamed(context, '/login');
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,

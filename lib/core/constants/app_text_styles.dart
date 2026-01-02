@@ -70,7 +70,7 @@ class AppTextStyles {
 
   // Brand style with Acme font (for "neneo?" logo)
   static TextStyle brandLogo = GoogleFonts.acme(
-    fontSize: 48,
+    fontSize: 34,
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
   );

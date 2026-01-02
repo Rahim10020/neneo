@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
+import '../../providers/user_provider.dart';
 
 class PhoneVerificationScreen extends StatefulWidget {
   final String phoneNumber;
@@ -21,7 +24,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
   bool _isLoading = false;
 
-  void _verify() async {
+  Future<void> _verify() async {
     final code = _controllers.map((c) => c.text).join();
 
     if (code.length < 4) {
@@ -29,17 +32,27 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
       return;
     }
 
+    final userProvider = context.read<UserProvider>();
+
     setState(() => _isLoading = true);
 
     // Simulate verification
     await Future.delayed(const Duration(seconds: 2));
 
-    setState(() => _isLoading = false);
+    // Create the user account (local storage) before going to payment
+    final ok = await userProvider.login(widget.phoneNumber);
 
     if (!mounted) return;
 
+    setState(() => _isLoading = false);
+
+    if (!ok) {
+      _showError('Impossible de créer le compte');
+      return;
+    }
+
     // Navigate to payment
-    Navigator.pushNamed(context, '/payment');
+    Navigator.pushReplacementNamed(context, '/payment');
   }
 
   void _showError(String message) {

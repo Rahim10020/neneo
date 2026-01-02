@@ -1,11 +1,11 @@
 - Se renseigner sur les tarifs reels taxi et zemidjans dans la ville de lome; Ensuite 
-    mette a jour dans app_constants
-- implementer l'abonnement (bouton s'abonner dans settings)
-- reflechir sur quand la personne devra t il se connecter ? lors de l'abonnement pro ? 
-    Je veux pas qu'on oblige la creation de compte des l'arrivee dans l'application.
-    Donc la lors du passage en pro, il va creer d'abord un compte avant de continuer.
+    mettre a jour dans app_constants
+
 - Aussi on va griser le bouton motorcyle (qui renvoi dans l'historique des trajets d'une personne
     abonne) quand la personne n'est pas abonne.
+
 - Dans le cas ou la personne c'etais abonne et que son anbonnement est finie, on ne vas plus continuer
 a sauvegarder ses trajets. Dans ce cas, le bouton motorcyle sera cliquable sauf qu'on va seulement 
 afficher les trajets quand il etais abonne.
+
+- autofocus du cursor lors de la verification apres l'envoie du code.
