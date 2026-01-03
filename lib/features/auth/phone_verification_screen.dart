@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:neneo/core/constants/app_constants.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -23,6 +24,18 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   );
   final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (_focusNodes.isNotEmpty) {
+        _focusNodes.first.requestFocus();
+      }
+    });
+  }
 
   Future<void> _verify() async {
     final code = _controllers.map((c) => c.text).join();
@@ -52,7 +65,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
     }
 
     // Navigate to payment
-    Navigator.pushReplacementNamed(context, '/payment');
+    Navigator.pushReplacementNamed(context, AppConstants.routePayment);
   }
 
   void _showError(String message) {
@@ -110,6 +123,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                     child: TextField(
                       controller: _controllers[index],
                       focusNode: _focusNodes[index],
+                      autofocus: index == 0,
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       maxLength: 1,
