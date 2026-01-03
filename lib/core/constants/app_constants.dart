@@ -44,6 +44,7 @@ class AppConstants {
   // Pro Subscription
   static const int proMonthlyPrice = 500; // CFA
   static const int proYearlyPrice = 5000; // CFA (save 1000)
+  static const String eachMonth = 'par mois';
 
   // Limits
   static const int freeTripsPerDay = 10;

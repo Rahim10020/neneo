@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neneo/core/constants/app_constants.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 import 'widgets/payment_method_card.dart';
@@ -118,7 +119,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Text('Paiement', style: AppTextStyles.h2),
+                  Text('Paiement', style: AppTextStyles.h3),
                 ],
               ),
             ),
@@ -132,12 +133,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     // Amount
                     Center(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            '500 FCFA',
+                            '${AppConstants.proMonthlyPrice} FCFA',
                             style: AppTextStyles.h1.copyWith(fontSize: 48),
                           ),
-                          Text('par mois', style: AppTextStyles.bodyMedium),
+                          Text(
+                            AppConstants.eachMonth,
+                            style: AppTextStyles.bodyMedium,
+                          ),
                         ],
                       ),
                     ),
@@ -219,7 +224,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             color: AppColors.textPrimary,
                           ),
                         )
-                      : Text('Payer 500 FCFA'),
+                      : Text('Payer ${AppConstants.proMonthlyPrice} FCFA'),
                 ),
               ),
             ),

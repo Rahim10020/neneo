@@ -30,7 +30,7 @@ class PaymentMethodCard extends StatelessWidget {
           color: isSelected
               ? AppColors.primary.withValues(alpha: 0.1)
               : AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(30),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.gray300,
             width: isSelected ? 2 : 1,
@@ -42,7 +42,7 @@ class PaymentMethodCard extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.primary : AppColors.gray100,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(30),
               ),
               child: Icon(
                 icon,
