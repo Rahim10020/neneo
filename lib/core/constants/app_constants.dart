@@ -52,6 +52,9 @@ class AppConstants {
   // Contact
   static const String supportEmail = 'rahim100codeur@gmail.com';
   static const String supportPhone = '+228 91 79 61 15';
+  static const String supportWhatsApp = '+228 91 79 61 15';
+  static const String indicatifNumero = '+228';
+  static const String hintNumber = '90 00 00 00';
 
   // URLs
   static const String privacyPolicyUrl = 'https://neneo.app/privacy';

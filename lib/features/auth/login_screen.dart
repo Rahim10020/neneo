@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:neneo/core/constants/app_constants.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 
@@ -90,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Row(
                   children: [
                     Text(
-                      '+228',
+                      AppConstants.indicatifNumero,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -108,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           LengthLimitingTextInputFormatter(8),
                         ],
                         decoration: InputDecoration(
-                          hintText: '90 00 00 00',
+                          hintText: AppConstants.hintNumber,
                           hintStyle: AppTextStyles.bodyLarge.copyWith(
                             color: AppColors.gray500,
                           ),
