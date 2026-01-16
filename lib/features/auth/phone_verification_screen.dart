@@ -88,7 +88,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: AppColors.textPrimary,
@@ -108,7 +108,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
               const SizedBox(height: 8),
 
               Text(
-                'Code envoyé au +228 ${widget.phoneNumber}',
+                'Code envoyé au ${AppConstants.indicatifNumero} ${widget.phoneNumber}',
                 style: AppTextStyles.bodyMedium,
               ),
 

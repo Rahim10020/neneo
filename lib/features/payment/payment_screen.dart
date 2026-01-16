@@ -104,7 +104,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: AppColors.textPrimary,
