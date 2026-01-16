@@ -7,5 +7,3 @@
 - Dans le cas ou la personne c'etais abonne et que son anbonnement est finie, on ne vas plus continuer
 a sauvegarder ses trajets. Dans ce cas, le bouton motorcyle sera cliquable sauf qu'on va seulement 
 afficher les trajets quand il etais abonne.
-
-- autofocus du cursor lors de la verification apres l'envoie du code.
