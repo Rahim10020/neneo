@@ -9,6 +9,9 @@ import '../../providers/trip_provider.dart';
 import 'widgets/settings_section.dart';
 import 'widgets/settings_item.dart';
 import 'widgets/pro_card.dart';
+import 'widgets/language_option.dart';
+import 'widgets/vehicle_option.dart';
+import 'widgets/contact_row.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -64,7 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Text('Choisir une langue', style: AppTextStyles.h3),
               const SizedBox(height: 20),
-              _LanguageOption(
+              LanguageOption(
                 language: 'Français',
                 isSelected: userProvider.user.preferredLanguage == 'fr',
                 onTap: () {
@@ -73,7 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               const SizedBox(height: 12),
-              _LanguageOption(
+              LanguageOption(
                 language: 'Ewe',
                 isSelected: userProvider.user.preferredLanguage == 'ewe',
                 onTap: () {
@@ -111,7 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Text('Véhicule par défaut', style: AppTextStyles.h3),
               const SizedBox(height: 20),
-              _VehicleOption(
+              VehicleOption(
                 icon: Icons.motorcycle,
                 label: 'Zémidjan (Moto)',
                 isSelected: userProvider.user.defaultVehicle == 'moto',
@@ -121,7 +124,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               const SizedBox(height: 12),
-              _VehicleOption(
+              VehicleOption(
                 icon: Icons.local_taxi,
                 label: 'Taxi',
                 isSelected: userProvider.user.defaultVehicle == 'taxi',
@@ -201,12 +204,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _ContactRow(
+            ContactRow(
               icon: Icons.email_outlined,
               label: AppConstants.supportEmail,
             ),
             const SizedBox(height: 12),
-            _ContactRow(
+            ContactRow(
               icon: Icons.phone_outlined,
               label: AppConstants.supportPhone,
             ),
@@ -639,118 +642,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         );
       },
-    );
-  }
-}
-
-// Language option widget
-class _LanguageOption extends StatelessWidget {
-  final String language;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _LanguageOption({
-    required this.language,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : null,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.gray300,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              language,
-              style: AppTextStyles.bodyLarge.copyWith(
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-            if (isSelected) Icon(Icons.check_circle, color: AppColors.primary),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Vehicle option widget
-class _VehicleOption extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _VehicleOption({
-    required this.icon,
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : null,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.gray300,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: AppColors.textPrimary),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: AppTextStyles.bodyLarge.copyWith(
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-            if (isSelected) Icon(Icons.check_circle, color: AppColors.primary),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Contact row widget
-class _ContactRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _ContactRow({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: AppColors.textPrimary, size: 20),
-        const SizedBox(width: 12),
-        Expanded(child: Text(label, style: AppTextStyles.bodyMedium)),
-      ],
     );
   }
 }
