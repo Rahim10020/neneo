@@ -475,44 +475,144 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
 
-                // Origin Button
-                if (_isGettingLocation)
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppColors.gray100,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          'Détection de votre position...',
-                          style: AppTextStyles.bodyLarge.copyWith(
-                            color: AppColors.gray500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  LocationButton(
-                    label: 'POINT DE DÉPART',
-                    selectedPlace: _originPlace,
-                    icon: Icons.radio_button_checked,
-                    iconColor: AppColors.error,
-                    onTap: _selectOrigin,
+                // === Bloc trajet (style type Gozem) ===
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
                   ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Timeline verticale (origine / destination)
+                      Column(
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.error,
+                            ),
+                          ),
+                          Container(
+                            width: 2,
+                            height: 32,
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.gray300,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                          ),
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.success,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 12),
+
+                      // Contenu des deux champs
+                      Expanded(
+                        child: Column(
+                          children: [
+                            // Ligne origine
+                            GestureDetector(
+                              onTap: _selectOrigin,
+                              child: LocationButton(
+                                label: 'POINT DE DÉPART',
+                                selectedPlace: _originPlace,
+                                icon: Icons.radio_button_checked,
+                                iconColor: AppColors.error,
+                                onTap: _selectOrigin,
+                              ),
+                            ),
+                            const Divider(
+                              height: 16,
+                              thickness: 0.7,
+                              color: AppColors.gray300,
+                            ),
+                            // Ligne destination
+                            GestureDetector(
+                              onTap: _selectDestination,
+                              child: LocationButton(
+                                label: 'DESTINATION',
+                                selectedPlace: _destinationPlace,
+                                icon: Icons.location_on,
+                                iconColor: AppColors.success,
+                                onTap: _selectDestination,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(width: 8),
+
+                      // Bouton swap
+                      GestureDetector(
+                        onTap: _swapLocations,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.gray100,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: AppColors.gray300,
+                              width: 1,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.swap_vert,
+                            color: AppColors.textPrimary,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                if (_isGettingLocation) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Détection de votre position...',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.gray500,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
 
                 if (_locationPermissionDenied) ...[
                   const SizedBox(height: 8),
@@ -524,39 +624,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ],
-
-                const SizedBox(height: 8),
-
-                // Swap button
-                Center(
-                  child: GestureDetector(
-                    onTap: _swapLocations,
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.gray100,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppColors.gray300, width: 1),
-                      ),
-                      child: Icon(
-                        Icons.swap_vert,
-                        color: AppColors.textPrimary,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                // Destination Button
-                LocationButton(
-                  label: 'DESTINATION',
-                  selectedPlace: _destinationPlace,
-                  icon: Icons.location_on,
-                  iconColor: AppColors.success,
-                  onTap: _selectDestination,
-                ),
 
                 const SizedBox(height: 32),
 
