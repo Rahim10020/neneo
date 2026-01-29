@@ -24,6 +24,9 @@ class UserProvider with ChangeNotifier {
       _user = savedUser;
     }
 
+    // Vérifier immédiatement si un abonnement Pro a expiré
+    await checkProStatus();
+
     _setLoading(false);
   }
 

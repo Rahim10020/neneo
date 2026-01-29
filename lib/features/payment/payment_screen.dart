@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:neneo/core/constants/app_constants.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
+import '../../providers/user_provider.dart';
+import '../../services/payment_service.dart';
 import 'widgets/payment_method_card.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -21,16 +24,47 @@ class _PaymentScreenState extends State<PaymentScreen> {
       return;
     }
 
+    final userProvider = context.read<UserProvider>();
+    final user = userProvider.user;
+
+    if (user.phoneNumber.isEmpty) {
+      _showError(
+        'Aucun numero associe. Connectez-vous avant de proceder au paiement.',
+      );
+      return;
+    }
+
     setState(() => _isProcessing = true);
 
-    // Simulate payment
-    await Future.delayed(const Duration(seconds: 3));
+    // Utiliser le paiement mock pour simuler l’appel Fedapay
+    final paymentProvider = _mapToPaymentProvider(_selectedMethod!);
+    final paymentResponse = await PaymentService().mockPayment(
+      phoneNumber: user.phoneNumber,
+      provider: paymentProvider,
+    );
 
     if (!mounted) return;
 
     setState(() => _isProcessing = false);
 
-    // Show success
+    if (!paymentResponse.success || paymentResponse.transactionId == null) {
+      _showError(paymentResponse.message);
+      return;
+    }
+
+    // Activer réellement le compte Pro
+    final upgraded = await userProvider.upgradeToPro(
+      paymentResponse.transactionId!,
+    );
+
+    if (!upgraded) {
+      _showError(
+        'Votre paiement a ete valide, mais nous n\'avons pas pu activer votre abonnement. Reessayez plus tard.',
+      );
+      return;
+    }
+
+    // Afficher le succes une fois le compte Pro active
     _showSuccess();
   }
 
@@ -232,5 +266,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
         ),
       ),
     );
+  }
+
+  PaymentProvider _mapToPaymentProvider(PaymentMethod method) {
+    switch (method) {
+      case PaymentMethod.moov:
+        return PaymentProvider.moov;
+      case PaymentMethod.mtn:
+        return PaymentProvider.mtn;
+      case PaymentMethod.togocom:
+        return PaymentProvider.togocom;
+    }
   }
 }

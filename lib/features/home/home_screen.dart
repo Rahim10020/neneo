@@ -407,6 +407,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    final tripProvider = Provider.of<TripProvider>(context);
+    final hasHistory = tripProvider.history.isNotEmpty;
+    final isPro = userProvider.isPro;
+    final canAccessHistory = isPro || hasHistory;
     final canCalculate = _originPlace != null && _destinationPlace != null;
 
     return Scaffold(
@@ -428,10 +432,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Row(
                       children: [
-                        Icon(
-                          Icons.motorcycle,
-                          color: AppColors.textPrimary,
-                          size: 28,
+                        GestureDetector(
+                          onTap: canAccessHistory
+                              ? () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppConstants.routeHistory,
+                                  );
+                                }
+                              : () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Historique reserve aux membres Pro.\nAbonnez-vous pour enregistrer vos trajets.',
+                                      ),
+                                      backgroundColor: AppColors.warning,
+                                    ),
+                                  );
+                                },
+                          child: Icon(
+                            Icons.motorcycle,
+                            color: canAccessHistory
+                                ? AppColors.textPrimary
+                                : AppColors.gray300,
+                            size: 28,
+                          ),
                         ),
                         const SizedBox(width: 16),
                         GestureDetector(

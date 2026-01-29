@@ -348,80 +348,114 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Text(
                               userProvider.isPro
                                   ? 'L\'historique est activé pour votre compte Pro'
-                                  : 'L\'historique des trajets est désactivé pour les\ncomptes gratuits',
+                                  : 'L\'historique des trajets est desactive pour les\ncomptes gratuits.\nAbonnez-vous pour enregistrer vos futurs trajets.',
                               style: AppTextStyles.bodyMedium.copyWith(
                                 fontSize: 12,
                                 color: AppColors.gray500,
                               ),
                             ),
-                            if (userProvider.isPro && user.historyEnabled) ...[
-                              const SizedBox(height: 12),
-                              Consumer<TripProvider>(
-                                builder: (context, tripProvider, child) {
-                                  return Row(
-                                    children: [
-                                      Expanded(
-                                        child: OutlinedButton.icon(
-                                          onPressed: () => Navigator.pushNamed(
-                                            context,
-                                            AppConstants.routeHistory,
-                                          ),
-                                          icon: Icon(
-                                            Icons.history,
-                                            size: 18,
-                                            color: AppColors.textPrimary,
-                                          ),
-                                          label: Text(
-                                            'Voir l\'historique',
-                                            style: AppTextStyles.bodyMedium
-                                                .copyWith(
-                                                  color: AppColors.textPrimary,
-                                                  fontWeight: FontWeight.w600,
+                            Consumer<TripProvider>(
+                              builder: (context, tripProvider, child) {
+                                final hasHistory =
+                                    tripProvider.history.isNotEmpty;
+                                final canSeeHistory =
+                                    (userProvider.isPro &&
+                                        user.historyEnabled) ||
+                                    hasHistory;
+
+                                if (!canSeeHistory) {
+                                  return const SizedBox.shrink();
+                                }
+
+                                final isReadOnly =
+                                    !userProvider.isPro && hasHistory;
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: OutlinedButton.icon(
+                                            onPressed: () =>
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  AppConstants.routeHistory,
                                                 ),
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            side: BorderSide(
-                                              color: AppColors.gray300,
+                                            icon: Icon(
+                                              Icons.history,
+                                              size: 18,
+                                              color: AppColors.textPrimary,
                                             ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
+                                            label: Text(
+                                              isReadOnly
+                                                  ? 'Voir les anciens trajets'
+                                                  : 'Voir l\'historique',
+                                              style: AppTextStyles.bodyMedium
+                                                  .copyWith(
+                                                    color:
+                                                        AppColors.textPrimary,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      OutlinedButton.icon(
-                                        onPressed: _clearHistory,
-                                        icon: Icon(
-                                          Icons.delete_outline,
-                                          size: 18,
-                                          color: AppColors.error,
-                                        ),
-                                        label: Text(
-                                          'Effacer',
-                                          style: AppTextStyles.bodyMedium
-                                              .copyWith(
-                                                color: AppColors.error,
-                                                fontWeight: FontWeight.w600,
+                                            style: OutlinedButton.styleFrom(
+                                              side: BorderSide(
+                                                color: AppColors.gray300,
                                               ),
-                                        ),
-                                        style: OutlinedButton.styleFrom(
-                                          side: BorderSide(
-                                            color: AppColors.error,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
                                             ),
                                           ),
                                         ),
+                                        if (userProvider.isPro &&
+                                            user.historyEnabled) ...[
+                                          const SizedBox(width: 12),
+                                          OutlinedButton.icon(
+                                            onPressed: _clearHistory,
+                                            icon: Icon(
+                                              Icons.delete_outline,
+                                              size: 18,
+                                              color: AppColors.error,
+                                            ),
+                                            label: Text(
+                                              'Effacer',
+                                              style: AppTextStyles.bodyMedium
+                                                  .copyWith(
+                                                    color: AppColors.error,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                            ),
+                                            style: OutlinedButton.styleFrom(
+                                              side: BorderSide(
+                                                color: AppColors.error,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                    if (isReadOnly) ...[
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'Votre abonnement Pro est expire.\nVous pouvez toujours consulter vos anciens trajets.',
+                                        style: AppTextStyles.bodyMedium
+                                            .copyWith(
+                                              fontSize: 12,
+                                              color: AppColors.gray500,
+                                            ),
                                       ),
                                     ],
-                                  );
-                                },
-                              ),
-                            ],
+                                  ],
+                                );
+                              },
+                            ),
                           ],
                         ),
 
