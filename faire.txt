@@ -5,5 +5,5 @@
     abonne) quand la personne n'est pas abonne.
 
 - Dans le cas ou la personne c'etais abonne et que son anbonnement est finie, on ne vas plus continuer
-a sauvegarder ses trajets. Dans ce cas, le bouton motorcyle sera cliquable sauf qu'on va seulement 
+a sauvegarder ses trajets. Dans ce cas, le bouton motorcyle qui est sur la home page sera cliquable sauf qu'on va seulement 
 afficher les trajets quand il etais abonne.
