@@ -5,6 +5,9 @@ import '../../core/constants/app_text_styles.dart';
 import '../../providers/trip_provider.dart';
 import '../../services/location_service.dart';
 import 'widgets/location_suggestion_tile.dart';
+import 'widgets/location_search_bar.dart';
+import 'widgets/current_location_button.dart';
+import 'widgets/no_results_state.dart';
 
 class LocationSearchScreen extends StatefulWidget {
   final String title;
@@ -137,86 +140,21 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
       body: Column(
         children: [
           // Barre de recherche
-          Container(
-            color: AppColors.cardBackground,
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: _searchController,
-              focusNode: _searchFocusNode,
-              style: AppTextStyles.bodyLarge,
-              decoration: InputDecoration(
-                hintText: 'Rechercher un lieu...',
-                hintStyle: AppTextStyles.bodyLarge.copyWith(
-                  color: AppColors.gray500,
-                ),
-                prefixIcon: const Icon(Icons.search, color: AppColors.gray500),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear, color: AppColors.gray500),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _suggestions = _popularPlaces;
-                          });
-                        },
-                      )
-                    : null,
-                filled: true,
-                fillColor: AppColors.gray100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-              ),
-            ),
+          LocationSearchBar(
+            controller: _searchController,
+            focusNode: _searchFocusNode,
+            onClear: () {
+              _searchController.clear();
+              setState(() {
+                _suggestions = _popularPlaces;
+              });
+            },
           ),
 
           // Bouton position actuelle
-          Container(
-            color: AppColors.cardBackground,
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: InkWell(
-              onTap: _isGettingLocation ? null : _useCurrentLocation,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.gray300),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    if (_isGettingLocation)
-                      const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.primary,
-                        ),
-                      )
-                    else
-                      const Icon(
-                        Icons.my_location,
-                        color: AppColors.primary,
-                        size: 24,
-                      ),
-                    const SizedBox(width: 16),
-                    Text(
-                      'Utiliser ma position actuelle',
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          CurrentLocationButton(
+            isGettingLocation: _isGettingLocation,
+            onTap: _useCurrentLocation,
           ),
 
           const Divider(height: 1, color: AppColors.gray300),
@@ -228,25 +166,7 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
                     child: CircularProgressIndicator(color: AppColors.primary),
                   )
                 : _suggestions.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: 64,
-                          color: AppColors.gray500,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Aucun lieu trouvé',
-                          style: AppTextStyles.bodyLarge.copyWith(
-                            color: AppColors.gray500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
+                ? const NoResultsState()
                 : ListView.builder(
                     itemCount: _suggestions.length,
                     padding: const EdgeInsets.symmetric(vertical: 8),

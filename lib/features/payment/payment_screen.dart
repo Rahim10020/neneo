@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:neneo/core/constants/app_constants.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 import '../../providers/user_provider.dart';
 import '../../services/payment_service.dart';
 import 'widgets/payment_method_card.dart';
+import 'widgets/payment_header.dart';
+import 'widgets/payment_amount.dart';
+import 'widgets/payment_pay_button_bar.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -131,32 +133,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: Column(
           children: [
             // Header
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.textPrimary,
-                          width: 1.5,
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Text('Paiement', style: AppTextStyles.h3),
-                ],
-              ),
-            ),
+            PaymentHeader(onBack: () => Navigator.pop(context)),
 
             Expanded(
               child: SingleChildScrollView(
@@ -165,21 +142,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Amount
-                    Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '${AppConstants.proMonthlyPrice} FCFA',
-                            style: AppTextStyles.h1.copyWith(fontSize: 48),
-                          ),
-                          Text(
-                            AppConstants.eachMonth,
-                            style: AppTextStyles.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
+                    const PaymentAmount(),
 
                     const SizedBox(height: 40),
 
@@ -233,34 +196,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
 
             // Pay button
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.cardBackground,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isProcessing ? null : _processPayment,
-                  child: _isProcessing
-                      ? SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.textPrimary,
-                          ),
-                        )
-                      : Text('Payer ${AppConstants.proMonthlyPrice} FCFA'),
-                ),
-              ),
+            PaymentPayButtonBar(
+              isProcessing: _isProcessing,
+              onPay: _processPayment,
             ),
           ],
         ),
