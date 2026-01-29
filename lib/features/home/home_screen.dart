@@ -8,8 +8,13 @@ import '../../providers/trip_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../services/location_service.dart';
 import '../location/location_search_screen.dart';
-import 'widgets/location_button.dart';
 import 'widgets/vehicle_selector.dart';
+import 'widgets/home_header.dart';
+import 'widgets/trip_locations_card.dart';
+import 'widgets/night_rate_banner.dart';
+import 'widgets/calculate_price_button.dart';
+import 'widgets/distance_estimate_hint.dart';
+import 'widgets/pro_badge.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -423,171 +428,34 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      AppConstants.appName,
-                      style: AppTextStyles.brandLogoSmall,
-                    ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: canAccessHistory
-                              ? () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppConstants.routeHistory,
-                                  );
-                                }
-                              : () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Historique réservé aux membres Pro.\nAbonnez-vous pour enregistrer vos trajets.',
-                                      ),
-                                      backgroundColor: AppColors.warning,
-                                    ),
-                                  );
-                                },
-                          child: Icon(
-                            Icons.motorcycle,
-                            color: canAccessHistory
-                                ? AppColors.textPrimary
-                                : AppColors.gray300,
-                            size: 28,
-                          ),
+                HomeHeader(
+                  canAccessHistory: canAccessHistory,
+                  onTapHistory: () {
+                    Navigator.pushNamed(context, AppConstants.routeHistory);
+                  },
+                  onTapHistoryLocked: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Historique réservé aux membres Pro.\nAbonnez-vous pour enregistrer vos trajets.',
                         ),
-                        const SizedBox(width: 16),
-                        GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            AppConstants.routeSettings,
-                          ),
-                          child: Icon(
-                            Icons.settings_outlined,
-                            color: AppColors.textPrimary,
-                            size: 26,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        backgroundColor: AppColors.warning,
+                      ),
+                    );
+                  },
+                  onTapSettings: () =>
+                      Navigator.pushNamed(context, AppConstants.routeSettings),
                 ),
 
                 const SizedBox(height: 24),
 
                 // === Bloc trajet (style type Gozem) ===
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Timeline verticale (origine / destination)
-                      Column(
-                        children: [
-                          Container(
-                            width: 10,
-                            height: 10,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.error,
-                            ),
-                          ),
-                          Container(
-                            width: 2,
-                            height: 32,
-                            margin: const EdgeInsets.symmetric(vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AppColors.gray300,
-                              borderRadius: BorderRadius.circular(999),
-                            ),
-                          ),
-                          Container(
-                            width: 10,
-                            height: 10,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.success,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 12),
-
-                      // Contenu des deux champs
-                      Expanded(
-                        child: Column(
-                          children: [
-                            // Ligne origine
-                            GestureDetector(
-                              onTap: _selectOrigin,
-                              child: LocationButton(
-                                label: 'POINT DE DÉPART',
-                                selectedPlace: _originPlace,
-                                icon: Icons.radio_button_checked,
-                                iconColor: AppColors.error,
-                                onTap: _selectOrigin,
-                              ),
-                            ),
-                            const Divider(
-                              height: 16,
-                              thickness: 0.7,
-                              color: AppColors.gray300,
-                            ),
-                            // Ligne destination
-                            GestureDetector(
-                              onTap: _selectDestination,
-                              child: LocationButton(
-                                label: 'DESTINATION',
-                                selectedPlace: _destinationPlace,
-                                icon: Icons.location_on,
-                                iconColor: AppColors.success,
-                                onTap: _selectDestination,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(width: 8),
-
-                      // Bouton swap
-                      GestureDetector(
-                        onTap: _swapLocations,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.gray100,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.gray300,
-                              width: 1,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.swap_vert,
-                            color: AppColors.textPrimary,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                TripLocationsCard(
+                  originPlace: _originPlace,
+                  destinationPlace: _destinationPlace,
+                  onSelectOrigin: _selectOrigin,
+                  onSelectDestination: _selectDestination,
+                  onSwapLocations: _swapLocations,
                 ),
 
                 if (_isGettingLocation) ...[
@@ -649,153 +517,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 24),
 
                 // Night rate indicator
-                if (_isNightRate)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.gray100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.nightlight_round,
-                          color: AppColors.textPrimary,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          AppConstants.tarifNuit,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                if (_isNightRate) const NightRateBanner(),
 
                 const SizedBox(height: 32),
 
                 // Calculate Button
-                Consumer<TripProvider>(
-                  builder: (context, tripProvider, child) {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: canCalculate && !tripProvider.isCalculating
-                            ? _onCalculatePrice
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          backgroundColor: canCalculate
-                              ? AppColors.primary
-                              : AppColors.gray300,
-                          disabledBackgroundColor: AppColors.gray300,
-                        ),
-                        child: tripProvider.isCalculating
-                            ? SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.textOnPrimary,
-                                ),
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Calculer le prix',
-                                    style: AppTextStyles.button.copyWith(
-                                      color: canCalculate
-                                          ? AppColors.textPrimary
-                                          : AppColors.gray500,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    Icons.calculate,
-                                    size: 20,
-                                    color: canCalculate
-                                        ? AppColors.textPrimary
-                                        : AppColors.gray500,
-                                  ),
-                                ],
-                              ),
-                      ),
-                    );
-                  },
+                CalculatePriceButton(
+                  canCalculate: canCalculate,
+                  onPressed: _onCalculatePrice,
                 ),
 
                 const SizedBox(height: 16),
 
                 // Distance estimate if both places selected
-                if (canCalculate)
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.gray100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: AppColors.primary,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Cliquez sur "Calculer le prix" pour obtenir une estimation',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                if (canCalculate) const DistanceEstimateHint(),
 
                 // Pro badge (if user is Pro)
                 if (userProvider.isPro) ...[
                   const SizedBox(height: 24),
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xFFFFEB3B), Color(0xFFFDD835)],
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: AppColors.textPrimary,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Membre Pro',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  const ProBadge(),
                 ],
               ],
             ),
