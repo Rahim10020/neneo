@@ -29,7 +29,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     if (user.phoneNumber.isEmpty) {
       _showError(
-        'Aucun numero associe. Connectez-vous avant de proceder au paiement.',
+        'Aucun numéro associé. Connectez-vous avant de procéder au paiement.',
       );
       return;
     }
@@ -59,7 +59,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     if (!upgraded) {
       _showError(
-        'Votre paiement a ete valide, mais nous n\'avons pas pu activer votre abonnement. Reessayez plus tard.',
+        'Votre paiement a été validé, mais nous n\'avons pas pu activer votre abonnement. Réessayez plus tard.',
       );
       return;
     }
@@ -97,7 +97,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Paiement réussi!',
+              'Paiement réussi !',
               style: AppTextStyles.h2,
               textAlign: TextAlign.center,
             ),

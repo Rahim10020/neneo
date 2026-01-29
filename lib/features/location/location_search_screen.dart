@@ -149,16 +149,10 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
                 hintStyle: AppTextStyles.bodyLarge.copyWith(
                   color: AppColors.gray500,
                 ),
-                prefixIcon: const Icon(
-                  Icons.search,
-                  color: AppColors.gray500,
-                ),
+                prefixIcon: const Icon(Icons.search, color: AppColors.gray500),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(
-                          Icons.clear,
-                          color: AppColors.gray500,
-                        ),
+                        icon: const Icon(Icons.clear, color: AppColors.gray500),
                         onPressed: () {
                           _searchController.clear();
                           setState(() {
@@ -231,41 +225,39 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
           Expanded(
             child: _isSearching
                 ? const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                    ),
+                    child: CircularProgressIndicator(color: AppColors.primary),
                   )
                 : _suggestions.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_off,
-                              size: 64,
-                              color: AppColors.gray500,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              'Aucun lieu trouvé',
-                              style: AppTextStyles.bodyLarge.copyWith(
-                                color: AppColors.gray500,
-                              ),
-                            ),
-                          ],
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: AppColors.gray500,
                         ),
-                      )
-                    : ListView.builder(
-                        itemCount: _suggestions.length,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        itemBuilder: (context, index) {
-                          final place = _suggestions[index];
-                          return LocationSuggestionTile(
-                            place: place,
-                            onTap: () => _onPlaceSelected(place),
-                          );
-                        },
-                      ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Aucun lieu trouvé',
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            color: AppColors.gray500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _suggestions.length,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    itemBuilder: (context, index) {
+                      final place = _suggestions[index];
+                      return LocationSuggestionTile(
+                        place: place,
+                        onTap: () => _onPlaceSelected(place),
+                      );
+                    },
+                  ),
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 import '../../core/constants/app_constants.dart';
@@ -17,6 +18,35 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  String _digitsOnly(String input) {
+    return input.replaceAll(RegExp(r'[^0-9]'), '');
+  }
+
+  Future<void> _contactSupportOnWhatsApp() async {
+    final phoneDigits = _digitsOnly(AppConstants.supportWhatsApp);
+    if (phoneDigits.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Numéro WhatsApp indisponible'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    final uri = Uri.parse('https://wa.me/$phoneDigits');
+
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Impossible d’ouvrir WhatsApp'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
   void _showLanguageSelector() {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
@@ -180,6 +210,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: Icons.phone_outlined,
               label: AppConstants.supportPhone,
             ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _contactSupportOnWhatsApp,
+                icon: const Icon(Icons.chat_outlined),
+                label: const Text('Contacter via WhatsApp'),
+              ),
+            ),
           ],
         ),
         actions: [
@@ -271,7 +310,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Text('Parametres', style: AppTextStyles.h3),
+                      Text('Paramètres', style: AppTextStyles.h3),
                     ],
                   ),
                 ),
@@ -297,7 +336,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             const SizedBox(height: 12),
                             SettingsItem(
                               icon: Icons.motorcycle,
-                              title: 'Vehicule par defaut',
+                              title: 'Véhicule par défaut',
                               trailing: user.defaultVehicle == 'moto'
                                   ? 'Moto'
                                   : 'Taxi',
@@ -348,7 +387,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Text(
                               userProvider.isPro
                                   ? 'L\'historique est activé pour votre compte Pro'
-                                  : 'L\'historique des trajets est desactive pour les\ncomptes gratuits.\nAbonnez-vous pour enregistrer vos futurs trajets.',
+                                  : 'L\'historique des trajets est désactivé pour les\ncomptes gratuits.\nAbonnez-vous pour enregistrer vos futurs trajets.',
                               style: AppTextStyles.bodyMedium.copyWith(
                                 fontSize: 12,
                                 color: AppColors.gray500,
@@ -444,7 +483,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     if (isReadOnly) ...[
                                       const SizedBox(height: 8),
                                       Text(
-                                        'Votre abonnement Pro est expire.\nVous pouvez toujours consulter vos anciens trajets.',
+                                        'Votre abonnement Pro est expiré.\nVous pouvez toujours consulter vos anciens trajets.',
                                         style: AppTextStyles.bodyMedium
                                             .copyWith(
                                               fontSize: 12,
@@ -584,10 +623,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               style: OutlinedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 16,
-                                ),
-                                side: BorderSide(color: AppColors.error),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                             ),

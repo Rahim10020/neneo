@@ -24,22 +24,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'titleEnd': 'avant de partir',
       'highlight': 'prix',
       'subtitle':
-          'Finis les negociations interminables, payer le prix normal sans surcharge.',
+          'Finies les négociations interminables, payez le prix normal sans surcharge.',
     },
     {
       'image': 'assets/images/moto.png',
       'titleStart': 'Rapide et',
       'titleEnd': '',
       'highlight': 'Simple',
-      'subtitle': 'Entre le depart et l\'arrivee, obtenez un prix instantane.',
+      'subtitle': 'Entre le départ et l\'arrivée, obtenez un prix instantané.',
     },
     {
       'image': 'assets/images/motorcycle.png',
-      'titleStart': 'Economisez',
+      'titleStart': 'Économisez',
       'titleEnd': 'jours',
       'highlight': 'chaque',
       'subtitle':
-          'Ne payer plus jamais trop cher. Obtenez le prix juste pour chaque course a Lome.',
+          'Ne payez plus jamais trop cher. Obtenez le prix juste pour chaque course à Lomé.',
     },
   ];
 

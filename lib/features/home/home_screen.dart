@@ -444,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
-                                        'Historique reserve aux membres Pro.\nAbonnez-vous pour enregistrer vos trajets.',
+                                        'Historique réservé aux membres Pro.\nAbonnez-vous pour enregistrer vos trajets.',
                                       ),
                                       backgroundColor: AppColors.warning,
                                     ),
@@ -507,12 +507,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 else
                   LocationButton(
-                    label: 'POINT DE DEPART',
+                    label: 'POINT DE DÉPART',
                     selectedPlace: _originPlace,
                     icon: Icons.radio_button_checked,
                     iconColor: AppColors.error,
                     onTap: _selectOrigin,
                   ),
+
+                if (_locationPermissionDenied) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Localisation non autorisée : sélectionnez votre point de départ manuellement.',
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.gray500,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
 
                 const SizedBox(height: 8),
 
@@ -551,7 +562,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // Vehicle Selector Section
                 Text(
-                  'CHOISIR UN VEHICULE',
+                  'CHOISIR UN VÉHICULE',
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.gray500,
                     fontSize: 12,
